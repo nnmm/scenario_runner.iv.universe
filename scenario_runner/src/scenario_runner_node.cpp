@@ -2,7 +2,7 @@
 #include <boost/cstdlib.hpp>
 #include <exception>
 #include <glog/logging.h>
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 #include <scenario_logger/logger.h>
 #include <scenario_runner/scenario_runner.h>
 #include <scenario_runner/scenario_terminater.h>
@@ -21,19 +21,18 @@ int main(int argc, char * argv[]) try
   google::InitGoogleLogging(argv[0]);
   google::InstallFailureFunction(&failureCallback);
 
-  ros::init(argc, argv, "scenario_runner_node");
-  ros::NodeHandle nh;
-  ros::NodeHandle pnh("~");
+  rclcpp::init(argc, argv, "scenario_runner_node");
+  rclcpp::NodeHandle pnh("~");
 
-  scenario_logger::log.setStartDatetime(ros::Time::now());
+  scenario_logger::log.setStartDatetime(this->now());
   SCENARIO_LOG_STREAM(CATEGORY("simulation", "progress"), "Logging started.");
 
   std::string scenario_id;
-  pnh.getParam("scenario_id", scenario_id);
+  scenario_id = this->declare_parameter("scenario_id", scenario_id);
   scenario_logger::log.setScenarioID(scenario_id);
 
   std::string log_output_path;
-  pnh.getParam("log_output_path", log_output_path);
+  log_output_path = this->declare_parameter("log_output_path", log_output_path);
   scenario_logger::log.setLogOutputPath(log_output_path);
 
   SCENARIO_INFO_STREAM(CATEGORY(), "Sleep for 10 seconds.");
@@ -49,7 +48,7 @@ int main(int argc, char * argv[]) try
   /*
    * start simulation
    */
-  for (runner.run(); ros::ok(); ros::spinOnce())
+  for (runner.run(); rclcpp::ok(); rclcpp::spinOnce())
   {
     static auto previously{runner.currently};
 
@@ -77,7 +76,7 @@ int main(int argc, char * argv[]) try
     terminator.update_mileage(runner.current_mileage());
 
     terminator.update_duration(
-      (ros::Time::now() - scenario_logger::log.begin()).toSec());
+      (this->now() - scenario_logger::log.begin()).seconds());
   }
 
   if (runner.currently == simulation_is::ongoing)

@@ -3,13 +3,13 @@
 
 namespace scenario_runner
 {
-ScenarioRunner::ScenarioRunner(ros::NodeHandle nh, ros::NodeHandle pnh)
+ScenarioRunner::ScenarioRunner(rclcpp::NodeHandle nh, rclcpp::NodeHandle pnh)
 : currently{simulation_is::ongoing},
   nh_{nh},
   pnh_{pnh},
   simulator_{std::make_shared<ScenarioAPI>()}
 {
-  pnh_.getParam("scenario_path", scenario_path_);
+  scenario_path_ = this->declare_parameter("scenario_path", scenario_path_);
 
   if (not (*simulator_).waitAutowareInitialize())
   {
@@ -91,7 +91,7 @@ try
   simulator_->waitAPIReady();
   SCENARIO_INFO_STREAM(CATEGORY(), "Simulator API is ready.");
 
-  timer_ = nh_.createTimer(ros::Duration(0.01), &ScenarioRunner::update, this);
+  timer_ = nh_.createTimer(rclcpp::Duration(0.01), &ScenarioRunner::update, this);
 
   if (not simulator_->sendEngage(true))
   {
@@ -99,7 +99,7 @@ try
   }
   SCENARIO_INFO_STREAM(CATEGORY("simulation", "progress"), "ScenarioRunner engaged Autoware.");
 
-  scenario_logger::log.initialize(ros::Time::now()); // NOTE: initialize logger's clock here.
+  scenario_logger::log.initialize(this->now()); // NOTE: initialize logger's clock here.
   SCENARIO_INFO_STREAM(CATEGORY("simulation", "progress"), "Simulation started.");
 }
 catch (...)
@@ -107,7 +107,7 @@ catch (...)
   SCENARIO_ERROR_RETHROW(CATEGORY(), "Failed to initialize ScenarioRunner.");
 }
 
-void ScenarioRunner::update(const ros::TimerEvent & event) try
+void ScenarioRunner::update(const rclcpp::TimerEvent & event) try
 {
   scenario_logger::log.updateMoveDistance(simulator_->getMoveDistance());
   (*sequence_manager_).update(intersection_manager_);
