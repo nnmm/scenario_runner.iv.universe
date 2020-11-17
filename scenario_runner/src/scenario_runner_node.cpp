@@ -5,7 +5,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <scenario_logger/logger.h>
 #include <scenario_runner/scenario_runner.h>
-#include <scenario_runner/scenario_terminater.h>
+#include <scenario_runner/scenario_terminator.h>
 
 
 static scenario_runner::ScenarioTerminator terminator { "0.0.0.0", 10000 };

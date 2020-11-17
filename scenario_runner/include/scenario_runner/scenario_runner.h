@@ -1,16 +1,20 @@
 #ifndef SCENARIO_RUNNER_SCENARIO_RUNNER_H_INCLUDED
 #define SCENARIO_RUNNER_SCENARIO_RUNNER_H_INCLUDED
 
-#include <memory>
 
-#include <rclcpp/rclcpp.hpp>
 
+#include <scenario_entities/entity_manager.h>
 #include <scenario_expression/expression.h>
 #include <scenario_intersection/intersection_manager.h>
 #include <scenario_logger/logger.h>
-#include <scenario_runner/scenario_terminater.h>
+#include <scenario_runner/scenario_terminator.h>
 #include <scenario_sequence/sequence_manager.h>
 #include <scenario_utility/scenario_utility.h>
+
+#include <rclcpp/rclcpp.hpp>
+#include <yaml-cpp/yaml.h>
+
+#include <memory>
 
 namespace scenario_runner
 {

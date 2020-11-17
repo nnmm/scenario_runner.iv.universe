@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 project(scenario_runner)
 
-## Compile as C++11, supported in ROS Kinetic and newer
-### Compile options
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
 endif()
@@ -10,78 +8,20 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wno-unused-parameter -Wall -Wextra -Wpedantic)
 endif()
 
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  scenario_api
-  scenario_entities
-  scenario_expression
-  scenario_intersection
-  scenario_logger
-  scenario_logger_msgs
-  scenario_sequence
-  scenario_utility
+
+find_package(ament_cmake_auto REQUIRED)
+# we require all dependencies but by default ament_auto_find_build_dependencies doesn't require packages
+ament_auto_find_build_dependencies(REQUIRED
+  ${${PROJECT_NAME}_BUILD_DEPENDS}
+  ${${PROJECT_NAME}_BUILDTOOL_DEPENDS}
 )
 
-find_package(Boost COMPONENTS filesystem REQUIRED)
-find_package(yaml-cpp REQUIRED)
-
-catkin_package(
-  INCLUDE_DIRS include
-  CATKIN_DEPENDS roscpp
-                 scenario_api
-                 scenario_entities
-                 scenario_expression
-                 scenario_intersection
-                 scenario_logger
-                 scenario_logger_msgs
-                 scenario_sequence
-)
-
-include_directories(
-  include
-  ${catkin_INCLUDE_DIRS}
-  ${YAML_CPP_INCLUDE_DIR}
-)
-
-add_library(scenario_runner SHARED
+ament_auto_add_library(scenario_runner SHARED
   src/scenario_terminator.cpp
-  src/scenario_runner.cpp)
-add_dependencies(scenario_runner
-  ${${PROJECT_NAME}_EXPORTED_TARGETS}
-  ${catkin_EXPORTED_TARGETS}
-)
-target_link_libraries(scenario_runner
-  ${catkin_LIBRARIES}
-  glog
+  src/scenario_runner.cpp
 )
 
 ament_auto_add_executable(scenario_runner_node
   src/scenario_runner_node.cpp)
-add_dependencies(scenario_runner_node
-  ${${PROJECT_NAME}_EXPORTED_TARGETS}
-  ${catkin_EXPORTED_TARGETS}
-)
-target_link_libraries(scenario_runner_node
-  ${catkin_LIBRARIES}
-  scenario_runner
-  ${YAML_CPP_LIBRARIES}
-)
 
-install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-)
-
-foreach(dir launch)
-  install(DIRECTORY ${dir}/
-    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/${dir})
-endforeach(dir)
-
-install(TARGETS
-  scenario_runner scenario_runner_node
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
+ament_auto_package(INSTALL_TO_SHARE launch)

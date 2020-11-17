@@ -107,7 +107,7 @@ catch (...)
   SCENARIO_ERROR_RETHROW(CATEGORY(), "Failed to initialize ScenarioRunner.");
 }
 
-void ScenarioRunner::update(const rclcpp::TimerEvent & event) try
+void ScenarioRunner::update() try
 {
   scenario_logger::log.updateMoveDistance(simulator_->getMoveDistance());
   (*sequence_manager_).update(intersection_manager_);

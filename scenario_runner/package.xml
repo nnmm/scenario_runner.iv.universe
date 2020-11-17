@@ -16,8 +16,8 @@
   <depend>libgoogle-glog-dev</depend>
   <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-termcolor</exec_depend>  <!-- TODO MOVE THIS DEPENDENCY TO autoware.proj/ansible/roles or SCENARIO LAUNCHER -->
   <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-termcolor</exec_depend>
-  <depend>rosbag</depend>
   <depend>rclcpp</depend>
+  <depend>libgoogle-glog-dev</depend>
   <depend>scenario_api</depend>
   <depend>scenario_entities</depend>
   <depend>scenario_expression</depend>
@@ -26,6 +26,7 @@
   <depend>scenario_logger_msgs</depend>
   <depend>scenario_sequence</depend>
   <depend>yaml-cpp</depend>
+  <depend>xmlrpcpp</depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>

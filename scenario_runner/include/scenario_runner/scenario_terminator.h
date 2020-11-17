@@ -1,9 +1,7 @@
 #ifndef SCENARIO_RUNNER_SCENARIO_TERMINATOR_H_INCLUDEED
 #define SCENARIO_RUNNER_SCENARIO_TERMINATOR_H_INCLUDEED
 
-#include <rclcpp/rclcpp.hpp>
 #include <xmlrpcpp/XmlRpcClient.h>
-#include <xmlrpcpp/XmlRpcValue.h>
 
 namespace scenario_runner
 {
